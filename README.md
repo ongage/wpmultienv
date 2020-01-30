@@ -22,7 +22,8 @@ https://github.com/lupujo/wpmultienv
 * Optional: Create robots.txt-dev (usually deny all) and robots.txt-prod (usually allow) in Wordpress webroot folder, those will be deployed automatically depending on environment.
 
 # Deployment between environments:
-Publishing exports the entire wordpress website to S3 and returns a tag that can be used in the future to deploy to other environments in the same server or in different servers. Deploying overrides the local wordpress website with a version that was previously published to S3.
+The action of "Publish" exports the entire wordpress website to S3 and returns a tag that can be used in the future to deploy to other environments in the same server or in different servers. \
+The action of "Deploy" overrides the local wordpress website with a version from S3 that was previously published.
 * Publish from any env to S3 by running:
 ```docker exec <container_name> /wpmultienv/publish.sh```
 * Deploy from S3 to any env by running:
