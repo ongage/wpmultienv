@@ -1,0 +1,176 @@
+version: '3.7'
+
+services:
+   db-env1:
+     image: mysql:5.7
+     volumes:
+       - ${MAINFOLDER}/env1/db:/var/lib/mysql
+     restart: always
+     container_name: db-env1
+     hostname: db-env1
+     environment:
+       MYSQL_ROOT_PASSWORD: ${SQLPASSROOT}
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wpuser
+       MYSQL_PASSWORD: ${SQLPASSWP}
+     networks:
+        env1net:
+          aliases:
+           - db
+
+   wordpress-env1:
+     depends_on:
+       - db-env1
+     image: wordpress-env1
+     build: 
+         context: ./wp
+         dockerfile: ./Dockerfile
+         args:
+           - WWWDATA_UID=${ENV1UID}
+           - WWWDATA_GID=${ENV1GID}
+           - WWWHOST=${ENV1WWWHOST}
+     container_name: wordpress-env1
+     hostname: wordpress-env1
+     volumes:
+       - ${MAINFOLDER}/env1/www:/var/www/html
+       - ${PROJFOLDER}/.env:/wpmultienv/env
+     ports:
+             - ${ENV1IP}:80:80
+     restart: always
+     environment:
+       APACHE_RUN_USER: www-data
+       APACHE_RUN_GROUP: www-data
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wpuser
+       WORDPRESS_DB_PASSWORD: ${SQLPASSWP}
+       WORDPRESS_DB_NAME: wordpress
+     networks:
+        env1net:
+          aliases:
+           - www
+
+   db-env2:
+     image: mysql:5.7
+     volumes:
+       - ${MAINFOLDER}/env2/db:/var/lib/mysql
+     restart: always
+     container_name: db-env2
+     hostname: db-env2
+     environment:
+       MYSQL_ROOT_PASSWORD: ${SQLPASSROOT}
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wpuser
+       MYSQL_PASSWORD: ${SQLPASSWP}
+     networks:
+        env2net:
+          aliases:
+           - db
+
+   wordpress-env2:
+     depends_on:
+       - db-env2
+     image: wordpress-env2
+     build:
+         context: ./wp
+         dockerfile: ./Dockerfile
+         args:
+           - WWWDATA_UID=${ENV2UID}
+           - WWWDATA_GID=${ENV2GID}
+           - WWWHOST=${ENV2WWWHOST}
+     container_name: wordpress-env2
+     hostname: wordpress-env2
+     volumes:
+       - ${MAINFOLDER}/env2/www:/var/www/html
+       - ${PROJFOLDER}/.env:/wpmultienv/env
+     ports:
+             - ${ENV2IP}:80:80
+     restart: always
+     environment:
+       APACHE_RUN_USER: www-data
+       APACHE_RUN_GROUP: www-data
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wpuser
+       WORDPRESS_DB_PASSWORD: ${SQLPASSWP}
+       WORDPRESS_DB_NAME: wordpress
+     networks:
+        env2net:
+          aliases:
+           - www
+
+   db-env3:
+     image: mysql:5.7
+     volumes:
+       - ${MAINFOLDER}/env3/db:/var/lib/mysql
+     restart: always
+     container_name: db-env3
+     hostname: db-env3
+     environment:
+       MYSQL_ROOT_PASSWORD: ${SQLPASSROOT}
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wpuser
+       MYSQL_PASSWORD: ${SQLPASSWP}
+     networks:
+        env3net:
+          aliases:
+           - db
+
+   wordpress-env3:
+     depends_on:
+       - db-env3
+     image: wordpress-env3
+     build:
+         context: ./wp
+         dockerfile: ./Dockerfile
+         args:
+           - WWWDATA_UID=${ENV1UID}
+           - WWWDATA_GID=${ENV1GID}
+           - WWWHOST=${ENV3WWWHOST}
+     container_name: wordpress-env3
+     hostname: wordpress-env3
+     volumes:
+       - ${MAINFOLDER}/env3/www:/var/www/html
+       - ${PROJFOLDER}/.env:/wpmultienv/env
+     ports:
+             - ${ENV3IP}:80:80
+     restart: always
+     environment:
+       APACHE_RUN_USER: www-data
+       APACHE_RUN_GROUP: www-data
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wpuser
+       WORDPRESS_DB_PASSWORD: ${SQLPASSWP}
+       WORDPRESS_DB_NAME: wordpress
+     networks:
+        env3net:
+          aliases:
+           - www
+
+   sftp:
+     image: sftp
+     build:
+         context: ./sftp
+         dockerfile: ./Dockerfile
+     volumes:
+         - ${MAINFOLDER}/env1/www:/home/env1/env1-www
+         - ${MAINFOLDER}/env2/www:/home/env2/env2-www
+         - ${MAINFOLDER}/env3/www:/home/env3/env3-www
+         - ${MAINFOLDER}/sftpdata:/etc/ssh/private
+     container_name: sftp
+     ports:
+             - "0.0.0.0:${SFTPPORT}:22"
+     command:
+         - ${ENV1SFTPUSER}:${ENV1SFTPPASS}:${ENV1UID}:${ENV1GID}
+         - ${ENV2SFTPUSER}:${ENV2SFTPPASS}:${ENV2UID}:${ENV2GID}
+         - ${ENV3SFTPUSER}:${ENV3SFTPPASS}:${ENV3UID}:${ENV3GID}
+     networks:
+        sftpnet:
+
+networks:
+  env1net:
+          name: env1net
+  env2net:
+          name: env2net
+  env3net:
+          name: env3net
+  sftpnet:
+          name: sftpnet
