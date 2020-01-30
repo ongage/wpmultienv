@@ -13,13 +13,13 @@ https://github.com/lupujo/wpmultienv
 * To modify Wordpress or PHP versions, update the Dockerfile under wp/
 * Create an S3 bucket and IAM user. Use an IAM policy that denies ListBucket for extra security.
 * Add an IP per each environment to be used, update A records accordingly. Multiple IPs on a single instance were tested to be working under AWS EC2 by using "Secondary IPs".
-* Make sure to configure all settings properly into config file (wpmultienv.conf) and generate randomized passwords for all password fields.
-* Make sure to use a firewall or a security policy that limits access to selected IPs for web, sftp, ssh and any other needed port.
-* If you need less than 3 ENVs, simply comment out or remove the unneccessary wordpress and db instances from docker-compose.yml. Keep the removed env(s) config variables in order to not break any script.
+* Make sure to configure all settings properly into config file (wpmultienv.conf) per comments and make sure to generate strong *different* passwords for all password fields in config file.
+* Use a firewall or a security policy to limit access to selected IPs (if desired) for the SFTP port (TCP/2222), Host SSH port (TCP/22) and the HTTP ports (TCP/80, TCP/443).
+* If you need less than 3 ENVs, simply comment out or remove the unneccessary wordpress and db containers from docker-compose.yml. Keep the removed env(s) config variables in order to not break any script.
 * Run init.sh before first launch from the project folder.
 * Launch by running ```docker-compose up -d``` from the project folder.
 * It's highly recommended to block web access to /wp-admin in the production environment and only use wp-admin under development environments.
-* Optional: Create robots.txt-dev (usually deny all) and robots.txt-prod (usually allow) in Wordpress folder, those will be used automatically per environment.
+* Optional: Create robots.txt-dev (usually deny all) and robots.txt-prod (usually allow) in Wordpress webroot folder, those will be deployed automatically depending on environment.
 
 # Deployment between environments:
 Publishing exports the entire wordpress website to S3 and returns a tag that can be used in the future to deploy to other environments in the same server or in different servers. Deploying overrides the local wordpress website with a version that was previously published to S3.
