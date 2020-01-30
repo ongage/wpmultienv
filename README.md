@@ -1,7 +1,6 @@
 # wpmultienv - Wordpress Multi Environment
-jonathan.l@ongage.com
-
-Allows multiple Wordpress environments in a single server or in multiple servers with quick deployments between environments and tracked versions backed in AWS S3.
+Allows multiple Wordpress environments in a single server or in multiple servers with quick deployments between environments and tracked versions backed in AWS S3. \
+Created by lupujo (jonathan.l@ongage.com)
 
 # Usage examples:
 * A single server with 1 dev env and 1 prod env
