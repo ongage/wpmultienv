@@ -27,17 +27,17 @@ https://github.com/lupujo/wpmultienv
 
 # How it works
 * The action of "Publish" on an environment exports the entire wordpress website to S3 and returns a version tag that can be used in the future to deploy to other environments on the same server or on different servers. \
-Publish from any env to S3 by running:
+Publish from any env to S3 by running: \
 ```docker exec wordpress-<env> /wpmultienv/publish.sh```
 * The action of "Deploy" on an environment requires a tag to be provided. It destroys the existing wordpress website and overrides it with a version from S3 that was previously published using the provided version tag. \
-Deploy from S3 to any env by running:
+Deploy from S3 to any env by running: \
 ```docker exec wordpress-<env> /wpmultienv/deploy.sh <tag>```
 
 _Examples:_
 
-* Publish from env1 to S3:
+* Publish from env1 to S3: \
 ```docker exec wordpress-env1 /wpmultienv/publish.sh```
-* Deploy from S3 to env2 tag _111111111-dev.site.com-aaaaaaaaaaaa_:
+* Deploy from S3 to env2 tag _111111111-dev.site.com-aaaaaaaaaaaa_: \
 ```docker exec wordpress-env2 /wpmultienv/deploy.sh 111111111-dev.site.com-aaaaaaaaaaaa```
 
 # TODO
