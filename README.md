@@ -1,5 +1,6 @@
 # wpmultienv - Wordpress Multi Environment
-Allows multiple Wordpress environments on a single server or on multiple servers with quick deployments between environments and tracked versions backed in AWS S3. \
+Allows multiple Wordpress environments on a single server or on multiple servers with 1-click deployments between environments and tracked version history backed in AWS S3. \
+Unlike existing solutions which use migration plugins, patching of Wordpress code or using Multi Site features for hosting multiple sites in a single Wordpress installation, this solution provides complete separation between each environment while Wordpress is completely unaware of it being used as part of multiple syncing environments.
 https://github.com/lupujo/wpmultienv
 
 # Usage examples:
@@ -9,9 +10,9 @@ https://github.com/lupujo/wpmultienv
 * 4 servers: prod (with 1 prod env), dev1 (with 1 dev env), dev2 (1 dev env), dev3 (1 dev env)
 
 # Setup instructions:
-* Clone into /usr/local/wpmultienv (or any other location, update PROJFOLDER in config file)
-* To modify Wordpress or PHP versions, update the Dockerfile under wp/
-* Create an S3 bucket and IAM user. Use an IAM policy that denies ListBucket for extra security.
+* Clone into /usr/local/wpmultienv (or any other location, update PROJFOLDER in the config file)
+* To modify Wordpress or PHP versions, update the desired versions in the Dockerfile under wp/
+* Create an S3 bucket and an IAM user. Use an IAM policy that allows access only to that bucket and denies ListBucket for extra security.
 * Add an IP per each environment to be used, update A records accordingly. Multiple IPs on a single instance were tested to be working under AWS EC2 by using "Secondary IPs".
 * Make sure to configure all settings properly into config file (wpmultienv.conf) per comments and make sure to generate strong *different* passwords for all password fields in config file.
 * Use a firewall or a security policy to limit access to selected IPs (if desired) for the SFTP port (TCP/2222), Host SSH port (TCP/22) and the HTTP ports (TCP/80, TCP/443).
@@ -21,13 +22,13 @@ https://github.com/lupujo/wpmultienv
 * It's highly recommended to block web access to /wp-admin in the production environment and only use wp-admin under development environments.
 * Optional: Create robots.txt-dev (usually deny all) and robots.txt-prod (usually allow) in Wordpress webroot folder, those will be deployed automatically depending on environment.
 
-# Deployment between environments:
-The action of "Publish" exports the entire wordpress website to S3 and returns a tag that can be used in the future to deploy to other environments in the same server or in different servers. \
-The action of "Deploy" overrides the local wordpress website with a version from S3 that was previously published.
-* Publish from any env to S3 by running:
-```docker exec <container_name> /wpmultienv/publish.sh```
-* Deploy from S3 to any env by running:
-```docker exec <container_name> /wpmultienv/deploy.sh <tag>```
+# How it works
+* The action of "Publish" exports the entire wordpress website to S3 and returns a tag that can be used in the future to deploy to other environments in the same server or in different servers. \
+Publish from any env to S3 by running:
+```docker exec wordpress-<env> /wpmultienv/publish.sh```
+* The action of "Deploy" overrides the local wordpress website with a version from S3 that was previously published. \
+Deploy from S3 to any env by running:
+```docker exec wordpress-<env> /wpmultienv/deploy.sh <tag>```
 
 _Examples:_
 
