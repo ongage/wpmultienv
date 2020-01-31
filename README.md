@@ -17,10 +17,10 @@ jonathan.l@ongage.com
 * Clone project into /usr/local/wpmultienv (or any other location, update PROJFOLDER in the config file)
 * If you wish to modify the Wordpress or PHP versions, update the desired versions in the Dockerfile under wp/
 * Create an S3 bucket and an IAM user. Use an IAM policy that allows access only to that bucket and denies ListBucket for extra security.
-* According to the number of environments you wish to run, add an IP per each one and create A records for new hostnames. Multiple IPs on a single instance were tested to be working with AWS EC2 by using "Secondary IPs".
+* According to the number of environments you wish to run, add an IP per each one to the server, create A records for new hostnames and update the config file with the IP. For environments you don't need, use a 127.0.0.X IP. Multiple IPs on a single instance were tested to be working with AWS EC2 by using "Secondary IPs". 
 * Make sure to configure all settings properly into config file (wpmultienv.conf) per comments and make sure to generate strong *different* passwords for all relevant password fields in config file.
 * Use a firewall or a security policy to limit access to selected IPs (if desired) for the SFTP port (TCP/2222), Host SSH port (TCP/22) and the HTTP ports (TCP/80, TCP/443).
-* If you need less than 3 ENVs, simply comment out or remove the unneccessary wordpress and db containers from docker-compose.yml. Keep the removed env(s) config variables in order to not break any script.
+* If you need less than 3 ENVs, simply configure a 127.0.0.X IP in the config file. If you also wish to stop launching it although it doesn't do anything you can simply comment out or remove the env;s wordpress and db containers from docker-compose.yml. Keep the removed env(s) config variables in order to not break any script.
 * Run init.sh before first launch from the project folder.
 * Launch by running ```docker-compose up -d``` from the project folder.
 * It's highly recommended to block web access to /wp-admin in the production environment and only use wp-admin under development environments.
