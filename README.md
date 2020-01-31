@@ -1,32 +1,35 @@
 # wpmultienv - Wordpress Multi Environment
-Allows multiple Wordpress environments on a single server or on multiple servers with 1-click deployments between environments and tracked version history backed in AWS S3. \
-Unlike existing solutions which use migration plugins, patching of Wordpress code or using Multi Site features for hosting multiple sites in a single Wordpress installation, this solution provides complete separation between each environment while Wordpress is completely unaware of it being used as part of multiple syncing environments.
+Allows multiple Wordpress environments for a development workflow on a single server or on multiple servers with 1-click automated deployments between environments and tracked version history backed in AWS S3.
+
+Unlike some existing solutions which use Wordpress migration plugins, patching PHP code or using multisite features for hosting multiple sites on a single Wordpress installation, this solution provides complete separation between each environment while Wordpress is completely unaware of it being used as part of a group of multiple syncing environments.
 https://github.com/lupujo/wpmultienv
 
-# Usage examples:
-* A single server with 1 dev env and 1 prod env
-* A single server with 2 dev envs and 1 prod env
+# Examples for supported use-cases:
+* A single server with 1 dev env and 1 production env.
+* A single server with 3 envs: dev, staging and production.
+* A single server with 1 production env and a developer local PC running the dev env.
 * 2 servers: prod (with 1 prod env) and dev (with 3 dev envs)
 * 4 servers: prod (with 1 prod env), dev1 (with 1 dev env), dev2 (1 dev env), dev3 (1 dev env)
+* Any other desired combination.
 
 # Setup instructions:
-* Clone into /usr/local/wpmultienv (or any other location, update PROJFOLDER in the config file)
-* To modify Wordpress or PHP versions, update the desired versions in the Dockerfile under wp/
+* Clone project into /usr/local/wpmultienv (or any other location, update PROJFOLDER in the config file)
+* If you wish to modify the Wordpress or PHP versions, update the desired versions in the Dockerfile under wp/
 * Create an S3 bucket and an IAM user. Use an IAM policy that allows access only to that bucket and denies ListBucket for extra security.
-* Add an IP per each environment to be used, update A records accordingly. Multiple IPs on a single instance were tested to be working under AWS EC2 by using "Secondary IPs".
-* Make sure to configure all settings properly into config file (wpmultienv.conf) per comments and make sure to generate strong *different* passwords for all password fields in config file.
+* According to the number of environments you wish to run, add an IP per each one and create A records for new hostnames. Multiple IPs on a single instance were tested to be working with AWS EC2 by using "Secondary IPs".
+* Make sure to configure all settings properly into config file (wpmultienv.conf) per comments and make sure to generate strong *different* passwords for all relevant password fields in config file.
 * Use a firewall or a security policy to limit access to selected IPs (if desired) for the SFTP port (TCP/2222), Host SSH port (TCP/22) and the HTTP ports (TCP/80, TCP/443).
 * If you need less than 3 ENVs, simply comment out or remove the unneccessary wordpress and db containers from docker-compose.yml. Keep the removed env(s) config variables in order to not break any script.
 * Run init.sh before first launch from the project folder.
 * Launch by running ```docker-compose up -d``` from the project folder.
 * It's highly recommended to block web access to /wp-admin in the production environment and only use wp-admin under development environments.
-* Optional: Create robots.txt-dev (usually deny all) and robots.txt-prod (usually allow) in Wordpress webroot folder, those will be deployed automatically depending on environment.
+* Optional: Create robots.txt-dev (usually deny all) and robots.txt-prod (usually allow all) per your needs in the Wordpress webroot folder, those will be deployed automatically depending on environment.
 
 # How it works
-* The action of "Publish" exports the entire wordpress website to S3 and returns a tag that can be used in the future to deploy to other environments in the same server or in different servers. \
+* The action of "Publish" on an environment exports the entire wordpress website to S3 and returns a version tag that can be used in the future to deploy to other environments on the same server or on different servers. \
 Publish from any env to S3 by running:
 ```docker exec wordpress-<env> /wpmultienv/publish.sh```
-* The action of "Deploy" overrides the local wordpress website with a version from S3 that was previously published. \
+* The action of "Deploy" on an environment requires a tag to be provided. It destroys the existing wordpress website and overrides it with a version from S3 that was previously published using the provided version tag. \
 Deploy from S3 to any env by running:
 ```docker exec wordpress-<env> /wpmultienv/deploy.sh <tag>```
 
@@ -34,8 +37,8 @@ _Examples:_
 
 * Publish from env1 to S3:
 ```docker exec wordpress-env1 /wpmultienv/publish.sh```
-* Deploy a tag to env2 from S3:
-```docker exec wordpress-env2 /wpmultienv/deploy.sh <tag>```
+* Deploy from S3 to env2 tag _111111111-dev.site.com-aaaaaaaaaaaa_:
+```docker exec wordpress-env2 /wpmultienv/deploy.sh 111111111-dev.site.com-aaaaaaaaaaaa```
 
 # TODO
 * Add support for HTTPS
