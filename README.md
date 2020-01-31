@@ -2,7 +2,8 @@
 Allows multiple Wordpress environments for a development workflow on a single server or on multiple servers with 1-click automated deployments between environments and tracked version history backed in AWS S3.
 
 Unlike some existing solutions which use Wordpress migration plugins, patching PHP code or using multisite features for hosting multiple sites on a single Wordpress installation, this solution provides complete separation between each environment while Wordpress is completely unaware of it being used as part of a group of multiple syncing environments.
-https://github.com/lupujo/wpmultienv
+https://github.com/lupujo/wpmultienv \
+jonathan.l@ongage.com
 
 # Examples for supported use-cases:
 * A single server with 1 dev env and 1 production env.
