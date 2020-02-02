@@ -6,21 +6,21 @@ https://github.com/lupujo/wpmultienv \
 jonathan.l@ongage.com
 
 # Examples for supported use-cases:
-* A single server with 1 dev env and 1 production env.
-* A single server with 3 envs: dev, staging and production.
-* A single server with 1 production env and a developer local PC running the dev env.
-* 2 servers: prod (with 1 prod env) and dev (with 3 dev envs)
-* 4 servers: prod (with 1 prod env), dev1 (with 1 dev env), dev2 (1 dev env), dev3 (1 dev env)
+* A single machine with 1 dev env and 1 production env.
+* A single machine with 3 envs: dev, staging and production.
+* A single machine with 1 production env and a developer local PC running the dev env.
+* 2 machines: prod (with 1 prod env) and dev (with 3 dev envs)
+* 4 machines: prod (with 1 prod env), dev1 (with 1 dev env), dev2 (2nd dev env), dev3 (3rd dev env)
 * Any other desired combination.
 
 # Setup instructions:
 * Clone project into /usr/local/wpmultienv (or any other location, update PROJFOLDER in the config file)
 * If you wish to modify the Wordpress or PHP versions, update the desired versions in the Dockerfile under wp/
 * Create an S3 bucket and an IAM user. Use an IAM policy that allows access only to that bucket and denies ListBucket for extra security.
-* According to the number of environments you wish to run, add an IP per each one to the server, create A records for new hostnames and update the config file with the IP. For environments you don't need, use a 127.0.0.X IP. Multiple IPs on a single instance were tested to be working with AWS EC2 by using "Secondary IPs". 
+* According to the number of environments you wish to run, add an IP per each one to the server, create A records for new hostnames and update the config file with the IP(s). For environments you don't need, use a 127.0.0.X IP. Multiple IPs on a single instance were tested to be working with AWS EC2 by using "Secondary IPs". 
 * Make sure to configure all settings properly into config file (wpmultienv.conf) per comments and make sure to generate strong *different* passwords for all relevant password fields in config file.
 * Use a firewall or a security policy to limit access to selected IPs (if desired) for the SFTP port (TCP/2222), Host SSH port (TCP/22) and the HTTP ports (TCP/80, TCP/443).
-* If you need less than 3 ENVs, simply configure a 127.0.0.X IP in the config file. If you also wish to stop launching it although it doesn't do anything you can simply comment out or remove the env;s wordpress and db containers from docker-compose.yml. Keep the removed env(s) config variables in order to not break any script.
+* If you need less than 3 ENVs on a single server, simply configure a 127.0.0.X IP in the config file for the ENV you don't wish to use. If you also wish to stop launching it although it doesn't do anything you can simply comment out or remove the env's wordpress and db containers from docker-compose.yml. Keep the removed env(s) config variables in order to not break any script.
 * Run init.sh before first launch from the project folder.
 * Launch by running ```docker-compose up -d``` from the project folder.
 * It's highly recommended to block web access to /wp-admin in the production environment and only use wp-admin under development environments.
