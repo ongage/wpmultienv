@@ -1,4 +1,4 @@
-FROM wordpress:5.3.2-php7.3-apache
+FROM wordpress:5.9.2-php7.3-apache
 ARG WWWDATA_UID
 ARG WWWDATA_GID
 ARG WWWHOST
